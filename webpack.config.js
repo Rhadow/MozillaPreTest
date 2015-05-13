@@ -1,7 +1,7 @@
 var Webpack = require('webpack'),
     path = require('path'),
     nodeModulesPath = path.resolve(__dirname, 'node_modules'),
-    srcPath = path.resolve(__dirname, 'src', 'js', 'index.js'),
+    srcPath = path.resolve(__dirname, 'src', 'js', 'main.js'),
     distPath = path.resolve(__dirname, 'src'),
     CSS_LOADER = 'style-loader!css-loader',
     config;
