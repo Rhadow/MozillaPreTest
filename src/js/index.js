@@ -1,13 +1,24 @@
-'use strict';
-
 import Utility from './utility.js';
 
-var a = document.querySelector('h1');
-Utility.addClass(a, 'firefox');
-Utility.removeClass(a, 'mozilla firefox');
+var sortCityFromRaw = function(raw) {
+	let keys = Object.keys(raw),
+	    cities = [];
+	keys.forEach(key => {
+		let citiesByArea = raw[key].map(city => {
+			return city.city;
+		});
+		cities = cities.concat(citiesByArea);
+	});
+	main(cities);
+};
 
-Utility.getJSONFrom('https://api.github.com/users/poasdmzxcjew', function(res){
-	console.log(res.login);
-},function(err){
-	console.log(err);
-});
+var fetchFailedHandler = function(err) {
+	console.log(`Error State: ${err}, fetch tz.json failed!`);
+	main([]);
+};
+
+Utility.getJSONFrom('../assets/tz.json').then(sortCityFromRaw, fetchFailedHandler);
+
+var main = function(cities){
+	console.log(cities);
+}

@@ -26,19 +26,22 @@ var Utility = {
 
 		dom.className = newClassNames;
 	},
-	getJSONFrom(src, success=function(){}, failure=function(){}){
-		var xhr = new XMLHttpRequest();
-		xhr.open('get', src);
-		xhr.setRequestHeader('Content-Type', 'application/json');
-		xhr.onload = function() {
-		    if (xhr.status === 200) {
-		        success(JSON.parse(xhr.response));
-		    }
-		    else {
-		    	failure(JSON.parse(xhr.response));
-		    }
-		};
-		xhr.send();
+	getJSONFrom(src){
+		let promise = new Promise((resolve, reject) => {
+			let xhr = new XMLHttpRequest();
+			xhr.open('get', src);
+			xhr.setRequestHeader('Content-Type', 'application/json');
+			xhr.onload = function() {
+			    if (xhr.status === 200) {
+			    	resolve(JSON.parse(xhr.response));
+			    }
+			    else {
+			    	reject(JSON.parse(xhr.status));
+			    }
+			};
+			xhr.send();
+		});
+		return promise;
 	}
 };
 
