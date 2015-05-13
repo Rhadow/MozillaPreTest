@@ -84,8 +84,8 @@ var renderSuggestions = function(dom, list) {
 }
 
 var main = function(cities){
-	let inputTag = document.querySelector('.tag-input');
-	let suggestions = document.querySelector('.suggestions');
+	let inputTag = document.querySelector('.tag-input'),
+	    suggestions = document.querySelector('.suggestions');
 
 	let handleInputKeyUp = function(e){
 		let filteredCities = filterCity(inputTag.value, cities);
