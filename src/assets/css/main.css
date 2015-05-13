@@ -45,8 +45,9 @@
 }
 
 .suggestions {
+    position: absolute;
     display: inline-block;
-    width: 200px;
+    width: 300px;
     max-height: 150px;
     margin: 0;
     border-radius: 4px;
@@ -58,11 +59,10 @@
 
 .suggestions li {
     list-style: none;
-    width: auto;
     cursor: pointer;
 }
 
-.suggestions li:hover {
+.selected {
     color: white;
     background-color: #777;
 }

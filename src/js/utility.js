@@ -26,6 +26,9 @@ var Utility = {
 
 		dom.className = newClassNames;
 	},
+	hasClass(dom, className='') {
+		return dom.className.split(' ').indexOf(className) >= 0;
+	},
 	getJSONFrom(src, success=function(){}, failure=function(){}){
 		var xhr = new XMLHttpRequest();
 		xhr.open('get', src);
@@ -45,6 +48,29 @@ var Utility = {
 		  dom.addEventListener(event,handler,false);
 		} else {
 		  dom.attachEvent(`on${event}`, handler)
+		}
+	},
+	createListElement (content) {
+		let node = document.createElement('li'),
+		    text = document.createTextNode(content);
+		node.appendChild(text);
+		return node;
+	},
+	createTagElement (content) {
+		let node = document.createElement('span'),
+		    text = document.createTextNode(content),
+			cancelNode = document.createElement('span'),
+			cancelText = document.createTextNode('x');
+		cancelNode.appendChild(cancelText);
+		node.className = 'tag';
+		cancelNode.className = 'remove';
+		node.appendChild(text);
+		node.appendChild(cancelNode);
+		return node;
+	},
+	removeAllChildNodes (dom) {
+		while (dom.firstChild) {
+		    dom.removeChild(dom.firstChild);
 		}
 	}
 };
