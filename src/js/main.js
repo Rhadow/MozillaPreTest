@@ -107,7 +107,7 @@ let listSelectedHandler = function(e) {
 };
 
 let filterCity = function(condition, cities) {
-	condition = condition.includes('\\') ? '' : condition;
+	condition = condition.indexOf('\\') >= 0 ? '' : condition;
 	let regExp = new RegExp(`^${condition}`, 'i');
 	let filteredCities = cities.filter(city => regExp.test(city));
 	filteredCities = filteredCities.length === cities.length ? [] : filteredCities;
@@ -120,12 +120,12 @@ let renderSuggestions = function(dom, list) {
 		inputLeft = inputTag.getBoundingClientRect().left;
 	dom.style.top = `${inputTop + CONSTANTS.TOP_OFFSET}px`;
 	dom.style.left = `${inputLeft - CONSTANTS.LEFT_OFFSET}px`;
-	dom.scrollTop = 0;
 	Utility.removeAllChildNodes(dom);
 	list.forEach(city => {
 		dom.appendChild(Utility.createListElement(city));
 	});
 	Utility.removeClass(dom, 'hide');
+	dom.scrollTop = 0;
 	if(list.length === 0){
 		Utility.addClass(dom, 'hide');
 	}
@@ -139,10 +139,10 @@ let scrollToChild = function(child, parent, direction) {
 	    isChildHigherThanParentTop = childPosition.top < parentPosition.top;
 
 	if(direction === CONSTANTS.NEXT && isChildLowerThanParentBottom){
-		parent.scrollTop += childPosition.height;
+		parent.scrollTop += Math.floor(childPosition.height);
 	}
 	if(direction === CONSTANTS.PREVIOUS && isChildHigherThanParentTop){
-		parent.scrollTop -= childPosition.height;
+		parent.scrollTop -= Math.floor(childPosition.height);
 	}
 };
 
