@@ -139,10 +139,10 @@ let scrollToChild = function(child, parent, direction) {
 	    isChildHigherThanParentTop = childPosition.top < parentPosition.top;
 
 	if(direction === CONSTANTS.NEXT && isChildLowerThanParentBottom){
-		parent.scrollTop += Math.floor(childPosition.height);
+		parent.scrollTop += childPosition.height;
 	}
 	if(direction === CONSTANTS.PREVIOUS && isChildHigherThanParentTop){
-		parent.scrollTop -= Math.floor(childPosition.height);
+		parent.scrollTop -= childPosition.height;
 	}
 };
 
@@ -187,7 +187,10 @@ let main = function(cities){
 		addSubmitInteraction(inputTag, cities, e);
 	};
 
-	Utility.addEvent(inputTag, 'keydown', handleInputKeyDown);
+	Utility.addEvent(inputTag, 'keydown', handleInputKeyDown);	
+	Utility.addEvent(inputTag, 'blur', (e) =>{
+		Utility.addClass(document.querySelector('.suggestions'), 'hide');
+	});
 	Utility.addEvent(submitBtn, 'click', handleSubmit);
 	Utility.addEvent(autoCompleteWrapper, 'click', (e) =>{
 		inputTag.focus();
