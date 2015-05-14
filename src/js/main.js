@@ -197,4 +197,4 @@ let main = function(cities){
 	});
 };
 
-Utility.getJSONFrom('../src/assets/tz.json', sortCityFromRaw, fetchFailedHandler);
+Utility.getJSONFrom('./src/assets/tz.json', sortCityFromRaw, fetchFailedHandler);
