@@ -80,12 +80,12 @@ var addSelectedToSibilingNode = function(direction) {
 	if(direction === CONSTANTS.PREVIOUS && selected !== allSuggestionItems[0]){
 		Utility.removeClass(selected, 'selected');
 		Utility.addClass(selected.previousSibling, 'selected');
-		scrollToChild(selected.previousSibling, suggestionsWrapper);
+		scrollToChild(selected.previousSibling, suggestionsWrapper, CONSTANTS.PREVIOUS);
 	}
 	if(direction === CONSTANTS.NEXT && selected !== allSuggestionItems[allSuggestionItems.length-1]){
 		Utility.removeClass(selected, 'selected');
 		Utility.addClass(selected.nextSibling, 'selected');
-		scrollToChild(selected.nextSibling, suggestionsWrapper);
+		scrollToChild(selected.nextSibling, suggestionsWrapper, CONSTANTS.NEXT);
 	}
 };
 
@@ -125,32 +125,74 @@ var renderSuggestions = function(dom, list) {
 		dom.appendChild(Utility.createListElement(city));
 	});
 	Utility.removeClass(dom, 'hide');
+	dom.scrollTop = 0;
 	if(list.length === 0){
 		Utility.addClass(dom, 'hide');
 	}
 };
 
-var scrollToChild = function(child, parent) {
+var scrollToChild = function(child, parent, direction) {
 	let parentPosition = parent.getBoundingClientRect(),
 	    childPosition = child.getBoundingClientRect(),
-	    offset = 0;
+	    parentBottom = parentPosition.top + parentPosition.height;
 
-	if(childPosition.top + childPosition.height > parentPosition.top + parentPosition.height){
-		console.log(offset);
-		parent.scrollTop = childPosition.height + offset;
-		offset += childPosition.height;
+	if(direction === CONSTANTS.NEXT){
+		if(childPosition.top + childPosition.height > parentBottom){
+		    parent.scrollTop += childPosition.height;
+		}
+	}else{
+		if(childPosition.top < parentPosition.top){
+			parent.scrollTop -= childPosition.height;
+		}
 	}
+};
 
+var addSubmitInteraction = function(inputTag, cities, e) {
+	let confirmTags = document.querySelectorAll('.tag'),
+	    preTag = document.querySelector('.result'),
+	    isInputValid = false,
+	    result = [];
+
+	Array.prototype.forEach.call(confirmTags, tag => {
+		result.push(tag.textContent.slice(0, -1));
+	});
+
+	cities.forEach(city => {
+		if(inputTag.value === city || inputTag.value === '') {
+			isInputValid = true;
+		}
+	});
+
+	isInputValid ? showResult(result) : showErrorMessage();
+};
+
+var showResult = function(result) {
+	let JSONResult = JSON.stringify(result, null, 4);
+	Utility.addClass(document.querySelector('.warning'), 'hide');
+	document.querySelector('.result').textContent = JSONResult;
+};
+
+var showErrorMessage = function() {
+	Utility.removeClass(document.querySelector('.warning'), 'hide');
 };
 
 var main = function(cities){
-	let inputTag = document.querySelector('.tag-input');
+	let inputTag = document.querySelector('.tag-input'),
+	    submitBtn = document.querySelector('.submit-button'),
+	    autoCompleteWrapper = document.querySelector('.auto-complete-wrapper');
 
-	let handleInputKeyUp = function(e){
+	let handleInputKeyDown = function(e){
 		addInputInteraction(inputTag, cities, e);
 	};
+	let handleSubmit = function(e){
+		addSubmitInteraction(inputTag, cities, e);
+	};
 
-	Utility.addEvent(inputTag, 'keydown', handleInputKeyUp);
+	Utility.addEvent(inputTag, 'keydown', handleInputKeyDown);
+	Utility.addEvent(submitBtn, 'click', handleSubmit);
+	Utility.addEvent(autoCompleteWrapper, 'click', (e) =>{
+		inputTag.focus();
+	});
 };
 
 Utility.getJSONFrom('../assets/tz.json', sortCityFromRaw, fetchFailedHandler);
