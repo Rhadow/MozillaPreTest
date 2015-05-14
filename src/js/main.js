@@ -187,7 +187,7 @@ let main = function(cities){
 		addSubmitInteraction(inputTag, cities, e);
 	};
 
-	Utility.addEvent(inputTag, 'keydown', handleInputKeyDown);	
+	Utility.addEvent(inputTag, 'keydown', handleInputKeyDown);
 	Utility.addEvent(inputTag, 'blur', (e) =>{
 		Utility.addClass(document.querySelector('.suggestions'), 'hide');
 	});
@@ -197,4 +197,4 @@ let main = function(cities){
 	});
 };
 
-Utility.getJSONFrom('../assets/tz.json', sortCityFromRaw, fetchFailedHandler);
+Utility.getJSONFrom('../src/assets/tz.json', sortCityFromRaw, fetchFailedHandler);
