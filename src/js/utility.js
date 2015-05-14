@@ -53,6 +53,7 @@ var Utility = {
 	createListElement (content) {
 		let node = document.createElement('li'),
 		    text = document.createTextNode(content);
+		node.className = 'suggestion-item';
 		node.appendChild(text);
 		return node;
 	},
