@@ -187,10 +187,7 @@ let main = function(cities){
 		addSubmitInteraction(inputTag, cities, e);
 	};
 
-	Utility.addEvent(inputTag, 'keydown', handleInputKeyDown);	
-	Utility.addEvent(inputTag, 'blur', (e) =>{
-		Utility.addClass(document.querySelector('.suggestions'), 'hide');
-	});
+	Utility.addEvent(inputTag, 'keydown', handleInputKeyDown);
 	Utility.addEvent(submitBtn, 'click', handleSubmit);
 	Utility.addEvent(autoCompleteWrapper, 'click', (e) =>{
 		inputTag.focus();
