@@ -1,7 +1,7 @@
 import Utility from './utility.js';
 import CONSTANTS from './constants.js';
 
-var sortCityFromRaw = function(raw) {
+let sortCityFromRaw = function(raw) {
 	let keys = Object.keys(raw),
 	    cities = [];
 	keys.forEach(key => {
@@ -13,28 +13,26 @@ var sortCityFromRaw = function(raw) {
 	main(cities.sort());
 };
 
-var fetchFailedHandler = function(err) {
+let fetchFailedHandler = function(err) {
 	console.log(`Error State: ${err}, fetch tz.json failed!`);
 	main([]);
 };
 
-var addListInteraction = function() {
+let addListInteraction = function() {
 	let lists = document.querySelectorAll('li');
 	Array.prototype.forEach.call(lists, (list, index) => {
 		if(index === 0) {
 			Utility.addClass(list, 'selected');
 		}
 		Utility.addEvent(list, 'mouseover', (e) => {
-			Array.prototype.forEach.call(lists, dom => {
-				Utility.removeClass(dom, 'selected');
-			});
+			Utility.removeClass(document.querySelector('.selected'), 'selected');
 			Utility.addClass(e.target, 'selected');
 		});
 		Utility.addEvent(list, 'click', listSelectedHandler);
 	});
 };
 
-var addRemoveInteraction = function() {
+let addRemoveInteraction = function() {
 	let removeButtons = document.querySelectorAll('.remove');
 	Array.prototype.forEach.call(removeButtons, button => {
 		Utility.addEvent(button, 'click', (e) => {
@@ -46,9 +44,9 @@ var addRemoveInteraction = function() {
 	});
 };
 
-var addInputInteraction = function(inputDOM, cities, event) {
+let addInputInteraction = function(inputDOM, cities, event) {
 	window.setTimeout(() => {
-		let filteredCities = filterCity(inputDOM.value, cities),
+		let filteredCities,
 		    suggestions = document.querySelector('.suggestions');
 
 		if(!Utility.hasClass(suggestions, 'hide') && (event.keyCode === CONSTANTS.UP || event.keyCode === CONSTANTS.DOWN || event.keyCode === CONSTANTS.ENTER)){
@@ -66,13 +64,14 @@ var addInputInteraction = function(inputDOM, cities, event) {
 				    addTagToInput(selectedContent);
 			}
 		}else{
+			filteredCities = filterCity(inputDOM.value, cities);
 		    renderSuggestions(suggestions, filteredCities);
 		    addListInteraction();
 		}
 	});
 };
 
-var addSelectedToSibilingNode = function(direction) {
+let addSelectedToSibilingNode = function(direction) {
 	let selected = document.querySelector('.selected'),
 	    allSuggestionItems = document.querySelectorAll('.suggestion-item'),
 	    suggestionsWrapper = document.querySelector('.suggestions');
@@ -89,7 +88,7 @@ var addSelectedToSibilingNode = function(direction) {
 	}
 };
 
-var addTagToInput = function(content) {
+let addTagToInput = function(content) {
 	let inputTag = document.querySelector('.tag-input'),
 	    newTag = Utility.createTagElement(content),
 	    isRepetitive = Array.prototype.some.call(document.querySelectorAll('.tag'), node => {
@@ -103,51 +102,51 @@ var addTagToInput = function(content) {
 	addRemoveInteraction();
 };
 
-var listSelectedHandler = function(e) {
+let listSelectedHandler = function(e) {
 	addTagToInput(e.target.textContent);
 };
 
-var filterCity = function(condition, cities) {
+let filterCity = function(condition, cities) {
+	condition = condition.includes('\\') ? '' : condition;
 	let regExp = new RegExp(`^${condition}`, 'i');
 	let filteredCities = cities.filter(city => regExp.test(city));
 	filteredCities = filteredCities.length === cities.length ? [] : filteredCities;
 	return filteredCities;
 };
 
-var renderSuggestions = function(dom, list) {
+let renderSuggestions = function(dom, list) {
 	let inputTag = document.querySelector('.tag-input'),
 		inputTop = inputTag.getBoundingClientRect().top,
 		inputLeft = inputTag.getBoundingClientRect().left;
 	dom.style.top = `${inputTop + CONSTANTS.TOP_OFFSET}px`;
 	dom.style.left = `${inputLeft - CONSTANTS.LEFT_OFFSET}px`;
+	dom.scrollTop = 0;
 	Utility.removeAllChildNodes(dom);
 	list.forEach(city => {
 		dom.appendChild(Utility.createListElement(city));
 	});
 	Utility.removeClass(dom, 'hide');
-	dom.scrollTop = 0;
 	if(list.length === 0){
 		Utility.addClass(dom, 'hide');
 	}
 };
 
-var scrollToChild = function(child, parent, direction) {
+let scrollToChild = function(child, parent, direction) {
 	let parentPosition = parent.getBoundingClientRect(),
 	    childPosition = child.getBoundingClientRect(),
-	    parentBottom = parentPosition.top + parentPosition.height;
+	    parentBottom = parentPosition.top + parentPosition.height,
+	    isChildLowerThanParentBottom = childPosition.top + childPosition.height > parentBottom,
+	    isChildHigherThanParentTop = childPosition.top < parentPosition.top;
 
-	if(direction === CONSTANTS.NEXT){
-		if(childPosition.top + childPosition.height > parentBottom){
-		    parent.scrollTop += childPosition.height;
-		}
-	}else{
-		if(childPosition.top < parentPosition.top){
-			parent.scrollTop -= childPosition.height;
-		}
+	if(direction === CONSTANTS.NEXT && isChildLowerThanParentBottom){
+		parent.scrollTop += childPosition.height;
+	}
+	if(direction === CONSTANTS.PREVIOUS && isChildHigherThanParentTop){
+		parent.scrollTop -= childPosition.height;
 	}
 };
 
-var addSubmitInteraction = function(inputTag, cities, e) {
+let addSubmitInteraction = function(inputTag, cities, e) {
 	let confirmTags = document.querySelectorAll('.tag'),
 	    preTag = document.querySelector('.result'),
 	    isInputValid = false,
@@ -166,17 +165,17 @@ var addSubmitInteraction = function(inputTag, cities, e) {
 	isInputValid ? showResult(result) : showErrorMessage();
 };
 
-var showResult = function(result) {
+let showResult = function(result) {
 	let JSONResult = JSON.stringify(result, null, 4);
 	Utility.addClass(document.querySelector('.warning'), 'hide');
 	document.querySelector('.result').textContent = JSONResult;
 };
 
-var showErrorMessage = function() {
+let showErrorMessage = function() {
 	Utility.removeClass(document.querySelector('.warning'), 'hide');
 };
 
-var main = function(cities){
+let main = function(cities){
 	let inputTag = document.querySelector('.tag-input'),
 	    submitBtn = document.querySelector('.submit-button'),
 	    autoCompleteWrapper = document.querySelector('.auto-complete-wrapper');
