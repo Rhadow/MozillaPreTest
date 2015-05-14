@@ -188,9 +188,6 @@ let main = function(cities){
 	};
 
 	Utility.addEvent(inputTag, 'keydown', handleInputKeyDown);
-	Utility.addEvent(inputTag, 'blur', (e) =>{
-		Utility.addClass(document.querySelector('.suggestions'), 'hide');
-	});
 	Utility.addEvent(submitBtn, 'click', handleSubmit);
 	Utility.addEvent(autoCompleteWrapper, 'click', (e) =>{
 		inputTag.focus();
