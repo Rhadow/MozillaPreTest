@@ -6,8 +6,8 @@ var CONSTANTS = {
     'DOWN'     : 40,
     'PREVIOUS' : 'PREVIOUS',
     'NEXT'     : 'NEXT',
-    'TOP_OFFSET' : 30,
-    'LEFT_OFFSET' : 10
+    'TOP_OFFSET' : 36,
+    'LEFT_OFFSET' : 8
 };
 
 export default CONSTANTS;

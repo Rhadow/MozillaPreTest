@@ -47,39 +47,45 @@ var addRemoveInteraction = function() {
 };
 
 var addInputInteraction = function(inputDOM, cities, event) {
-	let filteredCities = filterCity(inputDOM.value, cities),
-	    suggestions = document.querySelector('.suggestions');
+	window.setTimeout(() => {
+		let filteredCities = filterCity(inputDOM.value, cities),
+		    suggestions = document.querySelector('.suggestions');
 
-	if(!Utility.hasClass(suggestions, 'hide') && (event.keyCode === CONSTANTS.UP || event.keyCode === CONSTANTS.DOWN || event.keyCode === CONSTANTS.ENTER)){
-		event.preventDefault();
-		switch (event.keyCode) {
-			case CONSTANTS.UP:
-			    addSelectedToSibilingNode(CONSTANTS.PREVIOUS);
-			    break;
-			case CONSTANTS.DOWN:
-			    addSelectedToSibilingNode(CONSTANTS.NEXT);
-			    break;
-			default:
-			    let selectedContent = document.querySelector('.selected').textContent;
-			    addTagToInput(selectedContent);
+		if(!Utility.hasClass(suggestions, 'hide') && (event.keyCode === CONSTANTS.UP || event.keyCode === CONSTANTS.DOWN || event.keyCode === CONSTANTS.ENTER)){
+			switch (event.keyCode) {
+				case CONSTANTS.UP:
+				    addSelectedToSibilingNode(CONSTANTS.PREVIOUS);
+				    event.preventDefault();
+				    break;
+				case CONSTANTS.DOWN:
+				    addSelectedToSibilingNode(CONSTANTS.NEXT);
+				    event.preventDefault();
+				    break;
+				default:
+				    let selectedContent = document.querySelector('.selected').textContent;
+				    addTagToInput(selectedContent);
+			}
+		}else{
+		    renderSuggestions(suggestions, filteredCities);
+		    addListInteraction();
 		}
-	}else{
-	    renderSuggestions(suggestions, filteredCities);
-	    addListInteraction();
-	}
+	});
 };
 
 var addSelectedToSibilingNode = function(direction) {
 	let selected = document.querySelector('.selected'),
-	    allSuggestionItems = document.querySelectorAll('.suggestion-item');
+	    allSuggestionItems = document.querySelectorAll('.suggestion-item'),
+	    suggestionsWrapper = document.querySelector('.suggestions');
 
 	if(direction === CONSTANTS.PREVIOUS && selected !== allSuggestionItems[0]){
 		Utility.removeClass(selected, 'selected');
 		Utility.addClass(selected.previousSibling, 'selected');
+		scrollToChild(selected.previousSibling, suggestionsWrapper);
 	}
 	if(direction === CONSTANTS.NEXT && selected !== allSuggestionItems[allSuggestionItems.length-1]){
 		Utility.removeClass(selected, 'selected');
 		Utility.addClass(selected.nextSibling, 'selected');
+		scrollToChild(selected.nextSibling, suggestionsWrapper);
 	}
 };
 
@@ -124,6 +130,19 @@ var renderSuggestions = function(dom, list) {
 	}
 };
 
+var scrollToChild = function(child, parent) {
+	let parentPosition = parent.getBoundingClientRect(),
+	    childPosition = child.getBoundingClientRect(),
+	    offset = 0;
+
+	if(childPosition.top + childPosition.height > parentPosition.top + parentPosition.height){
+		console.log(offset);
+		parent.scrollTop = childPosition.height + offset;
+		offset += childPosition.height;
+	}
+
+};
+
 var main = function(cities){
 	let inputTag = document.querySelector('.tag-input');
 
@@ -131,7 +150,7 @@ var main = function(cities){
 		addInputInteraction(inputTag, cities, e);
 	};
 
-	Utility.addEvent(inputTag, 'keyup', handleInputKeyUp);
+	Utility.addEvent(inputTag, 'keydown', handleInputKeyUp);
 };
 
 Utility.getJSONFrom('../assets/tz.json', sortCityFromRaw, fetchFailedHandler);
