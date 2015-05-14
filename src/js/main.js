@@ -152,6 +152,7 @@ let addSubmitInteraction = function(inputTag, cities, e) {
 	    isInputValid = false,
 	    result = [];
 
+	Utility.addClass(document.querySelector('.tag-input'), 'hide');
 	Array.prototype.forEach.call(confirmTags, tag => {
 		result.push(tag.textContent.slice(0, -1));
 	});
