@@ -162,6 +162,8 @@ let addSubmitInteraction = function(inputTag, cities, e) {
 		}
 	});
 
+	Utility.addClass(document.querySelector('.suggestions'), 'hide');
+
 	isInputValid ? showResult(result) : showErrorMessage();
 };
 
