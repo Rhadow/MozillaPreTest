@@ -45,6 +45,12 @@ let addRemoveInteraction = function() {
 };
 
 let addInputInteraction = function(inputDOM, cities, event) {
+	if(inputDOM.value === '' && event.keyCode === CONSTANTS.BACKSPACE){
+		let tagToBeDeleted = inputDOM.previousSibling;
+		if(tagToBeDeleted){
+			document.querySelector('.auto-complete-wrapper').removeChild(tagToBeDeleted);
+		}
+	}
 	window.setTimeout(() => {
 		let filteredCities,
 		    suggestions = document.querySelector('.suggestions');
